@@ -102,6 +102,11 @@ public class FormController {
         return this.roleService.listar();
     }
 
+    @ModelAttribute("genero")
+    public List<String> genero(){
+        return Arrays.asList("Hombre","Mujer");
+    }
+
     @GetMapping("/form")
     public String form(Model model){
         Usuario usuario = new Usuario();
@@ -109,13 +114,16 @@ public class FormController {
         usuario.setApellido("Doe");
         usuario.setIdentificador("11.001.101-L");
         usuario.setHabilitar(true);
+        usuario.setPais(new Pais(6,"CO","Colombia"));
+        usuario.setRoles(Arrays.asList(new Role(2, "Usuario", "ROLE_USER")));
+        usuario.setValorSecreto("algun valor secreto");
         model.addAttribute("titulo","Formulario usuarios");
         model.addAttribute(usuario);
         return "form";
     }
 
     @PostMapping("/form")
-    public String procesar(@Valid Usuario usuario, BindingResult result, Model model, SessionStatus status
+    public String procesar(@Valid Usuario usuario, BindingResult result, Model model
                            /*@RequestParam String username,
                            @RequestParam String password,
                            @RequestParam String email*/){
@@ -133,12 +141,22 @@ public class FormController {
                         "El campo ".concat(fieldError.getField()).concat(" ").concat(fieldError.getDefaultMessage()));
             });
             model.addAttribute("error",errores);*/
+            model.addAttribute("titulo","Resultado form");
             return "form";
 
         }
 
+        return "redirect:/ver";
+    }
+
+    @GetMapping("/ver")
+    public String ver(@SessionAttribute(name = "usuario",required = false) Usuario usuario, Model model, SessionStatus status){
+        if(usuario == null){
+            return "redirect:/form";
+        }
+
         model.addAttribute("titulo","Resultado form");
-        model.addAttribute("usuario",usuario);
+
         status.setComplete();
         return "resultado";
     }

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class PaisServiceImpl implements PaisService{
@@ -31,7 +32,7 @@ public class PaisServiceImpl implements PaisService{
     public Pais obtenerPorId(Integer id) {
         Pais resultado = null;
         for (Pais pais: lista) {
-            if(id == pais.getId()){
+            if(Objects.equals(id, pais.getId())){
                 resultado = pais;
                 break;
             }
